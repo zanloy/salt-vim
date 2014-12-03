@@ -1,0 +1,40 @@
+" vimrc: Managed by Salt - DO NOT EDIT
+" Changes manually to this file can, and will, be lost
+
+{% if grains['os_family'] == 'Debian' %}
+runtime! debian.vim
+{% endif %}
+{% if salt['pillar.get']('vim:syntax', True) %}
+set background={{ salt['pillar.get']('vim:bg_shading', 'dark') }}
+if has("syntax")
+  syntax on
+endif
+{% endif %}
+if has("autocmd")
+  {% for autocmd in salt['pillar.get']('vim:autocmds', []) %}
+  au {{ autocmd }}
+  {% endfor %}
+  {% if salt['pillar.get']('vim:lastposition', True) %}
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+  {% endif %}
+  autocmd BufNewFile,BufReadPre /media/*,/mnt/* set directory=~/tmp,/var/tmp,/tmp
+  {% if salt['pillar.get']('vim:indent', True) %}
+  filetype plugin indent on
+  {% endif %}
+endif
+
+{% for opt in salt['pillar.get']('vim:opts', []) %}
+set {{ opt }}
+{% endfor %}
+
+{% for k, v in salt['pillar.get']('vim:maps', {}).iteritems() %}
+map {{ k }} {{ v }}
+{% endfor %}
+
+{% if salt['pillar.get']('vim:powersave', False) %}
+let &guicursor = &guicursor . ",a:blinkon0"
+{% endif %}
+
+if filereadable("{{ salt['pillar.get']('vim:config_base_dir', '/etc') }}/vimrc.local")
+  source {{ salt['pillar.get']('vim:config_base_dir', '/etc') }}/vimrc.local
+endif
