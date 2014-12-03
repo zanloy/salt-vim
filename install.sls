@@ -1,7 +1,10 @@
 #!stateconf yaml . jinja
 
+{% set pkg = 'vim-enhanced' if grains['os_family'] == 'RedHat' else 'vim' %}
+
 .vim:
   pkg:
+    - name: {{ pkg }}
     - installed
 
 .vimrc:
