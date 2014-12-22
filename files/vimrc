@@ -4,12 +4,14 @@
 {% if grains['os_family'] == 'Debian' %}
 runtime! debian.vim
 {% endif %}
+
 {% if salt['pillar.get']('vim:syntax', True) %}
 set background={{ salt['pillar.get']('vim:bg_shading', 'dark') }}
 if has("syntax")
   syntax on
 endif
 {% endif %}
+
 if has("autocmd")
   {% for autocmd in salt['pillar.get']('vim:autocmds', []) %}
   au {{ autocmd }}
