@@ -13,16 +13,16 @@ endif
 {% endif %}
 
 if has("autocmd")
-  {% for autocmd in salt['pillar.get']('vim:autocmds', []) %}
+{% for autocmd in salt['pillar.get']('vim:autocmds', []) %}
   au {{ autocmd }}
-  {% endfor %}
-  {% if salt['pillar.get']('vim:lastposition', True) %}
+{% endfor %}
+{% if salt['pillar.get']('vim:lastposition', True) %}
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-  {% endif %}
+{% endif %}
   autocmd BufNewFile,BufReadPre /media/*,/mnt/* set directory=~/tmp,/var/tmp,/tmp
-  {% if salt['pillar.get']('vim:indent', True) %}
+{% if salt['pillar.get']('vim:indent', True) %}
   filetype plugin indent on
-  {% endif %}
+{% endif %}
 endif
 
 {% for opt in salt['pillar.get']('vim:opts', []) %}
